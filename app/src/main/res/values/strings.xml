@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Filmes Populares</string>
+    <string name="activity_detail_title">Detalhes</string>
+    <string name="label_data_lancamento">Lançamento</string>
+    <string name="label_media_voto">Avaliação</string>
+    <string name="menu_settings">Configurações</string>
+    <string name="title_activity_settings">Configurações</string>
+
+    <string name="pref_classificacao_key" translatable="false">classificacao</string>
+    <string name="pref_classificacao_label" translatable="false">Classificação</string>
+    <string name="pref_classificacao_default" translatable="false">popular</string>
+
+    <!--Valores que serão exibidos no combo para o usuário selecionar-->
+    <string-array name="pref_classificacao_entries">
+        <item>por Popularidade</item>
+        <item>por Avaliação</item>
+    </string-array>
+
+    <!--Valores a serem armazenados após o usuário selecionar o item-->
+    <string-array name="pref_classificacao_values">
+        <item>popular</item>
+        <item>top_rated</item>
+    </string-array>
+</resources>

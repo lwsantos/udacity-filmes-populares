@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:key="@string/pref_classificacao_key"
+        android:title="@string/pref_classificacao_label"
+        android:dialogTitle="@string/pref_classificacao_label"
+        android:defaultValue="@string/pref_classificacao_default"
+        android:entries="@array/pref_classificacao_entries"
+        android:entryValues="@array/pref_classificacao_values"/>
+
+</PreferenceScreen>
