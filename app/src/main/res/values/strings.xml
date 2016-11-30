@@ -1,10 +1,14 @@
 <resources>
     <string name="app_name">Filmes Populares</string>
+
     <string name="activity_detail_title">Detalhes</string>
+    <string name="title_activity_settings">Configurações</string>
+
     <string name="label_data_lancamento">Lançamento</string>
     <string name="label_media_voto">Avaliação</string>
+
     <string name="menu_settings">Configurações</string>
-    <string name="title_activity_settings">Configurações</string>
+    <string name="menu_atualizar">Atualizar</string>
 
     <string name="pref_classificacao_key" translatable="false">classificacao</string>
     <string name="pref_classificacao_label" translatable="false">Classificação</string>
@@ -21,4 +25,8 @@
         <item>popular</item>
         <item>top_rated</item>
     </string-array>
+
+    <string name="formato_data">MM/yyyy</string>
+
+    <string name="msg_erro_conexao">Verifique sua conexão com a Internet</string>
 </resources>

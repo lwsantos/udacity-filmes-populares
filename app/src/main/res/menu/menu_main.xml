@@ -7,4 +7,9 @@
         android:title="@string/menu_settings"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/men_atualizar"
+        android:title="@string/menu_atualizar"
+        app:showAsAction="never"/>
+
 </menu>

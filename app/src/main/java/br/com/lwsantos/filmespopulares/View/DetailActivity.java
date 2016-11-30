@@ -24,8 +24,8 @@ public class DetailActivity extends AppCompatActivity {
 
         //Recupera o filme selecionado na Activity Principal
         Intent itParent = this.getIntent();
-        if(itParent != null && itParent.hasExtra("Filme")){
-            filme = (Filme) itParent.getSerializableExtra("Filme");
+        if(itParent != null && itParent.hasExtra(Filme.PARCELABLE_KEY)){
+            filme = (Filme) itParent.getParcelableExtra(Filme.PARCELABLE_KEY);
             preencherFormulario();
         }
     }
@@ -49,7 +49,7 @@ public class DetailActivity extends AppCompatActivity {
 
             Picasso.with(this).load(Filme.URL_IMAGEM + filme.getPosterPath()).resize(widthImagem, heightImagem).into(imgPoster);
             txtTitulo.setText(filme.getTitulo());
-            SimpleDateFormat dtFormat = new SimpleDateFormat("MMM/yyyy");
+            SimpleDateFormat dtFormat = new SimpleDateFormat(getString(R.string.formato_data));
             txtDataLancamento.setText(dtFormat.format(filme.getDataLancamento()));
             txtMediaVoto.setText(String.format("%.2f", filme.getMediaVoto()));
             txtSinopse.setText(filme.getResumo());

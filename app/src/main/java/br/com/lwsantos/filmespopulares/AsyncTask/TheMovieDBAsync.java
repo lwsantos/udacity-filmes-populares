@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import br.com.lwsantos.filmespopulares.Adapter.ImageAdapter;
+import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
 import br.com.lwsantos.filmespopulares.Model.Filme;
 
 /**
@@ -25,13 +25,17 @@ public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Filme>> 
     private final static String KEY = "MOVIE DBAsync API KEY";
     private final static String LANGUAGE = "pt-BR";
 
-    private ImageAdapter mAdapter;
+    private AsyncTaskDelegate mDelegate = null;
+
+    public TheMovieDBAsync(AsyncTaskDelegate delegate){
+        mDelegate = delegate;
+    }
+
 
     @Override
     protected ArrayList<Filme> doInBackground(Object... params) {
 
-        mAdapter = (ImageAdapter)params[0];
-        String classificacao = (String) params[1];
+        String classificacao = (String) params[0];
 
         //Cria a URL https://api.themoviedb.org/3/movie/CLASSIFICACAO?api_key=KEY&language=IDIOMA
         Uri.Builder builder = new Uri.Builder();
@@ -73,14 +77,17 @@ public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Filme>> 
 
                 //Se houve um retorno da API armazena na variavel String
                 if (buffer.length() == 0) {
-                    jsonStr = null;
+                    return null;
                 } else {
                     jsonStr = buffer.toString();
+                    return new Filme().parseJSON(jsonStr);
                 }
             }
 
         } catch (IOException e) {
-            jsonStr = null;
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         } finally{
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -89,24 +96,18 @@ public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Filme>> 
                 try {
                     reader.close();
                 } catch (final IOException e) {
-
+                    e.printStackTrace();
                 }
             }
         }
 
-        try {
-            //Realiza o parse JSON para uma lista de Filmes.
-            ArrayList<Filme> listaFilmes = new Filme().parseJSON(jsonStr);
-            return listaFilmes;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return null;
     }
 
     @Override
     protected void onPostExecute(ArrayList<Filme> filmes) {
-        //Apos realizar a captura da lista de filmes, atualiza o adaptador que ira atualizar o IU.
-        mAdapter.addAll(filmes);
+        super.onPostExecute(filmes);
+        if(mDelegate != null)
+            mDelegate.processFinish(filmes);
     }
 }
