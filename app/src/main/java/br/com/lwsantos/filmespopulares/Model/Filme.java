@@ -53,13 +53,19 @@ public class Filme implements Parcelable {
 
             for (int i = 0; i < jsonResultado.length(); i++) {
                 Filme filme = new Filme();
-                filme.setTituloOriginal(jsonResultado.getJSONObject(i).getString("original_title"));
-                filme.setTitulo(jsonResultado.getJSONObject(i).getString("title"));
-                filme.setPosterPath(jsonResultado.getJSONObject(i).getString("poster_path"));
-                filme.setResumo(jsonResultado.getJSONObject(i).getString("overview"));
-                filme.setMediaVoto(jsonResultado.getJSONObject(i).getDouble("vote_average"));
 
-                String dateStr = jsonResultado.getJSONObject(i).getString("release_date");
+                /* Pode acontecer em alguma situação do campo overview não vir preenchido ou não existir no JSON?
+                Se sim, o ideal neste caso é utilizar o método optString() ao invés do getString(),
+                pois, utilizando o getString(), caso o JSON não contenha a propriedade que você está tentando recuperar o valor,
+                um erro será lançado e o funcionamento da sua aplicação pode ser afetado. */
+
+                filme.setTituloOriginal(jsonResultado.getJSONObject(i).optString("original_title"));
+                filme.setTitulo(jsonResultado.getJSONObject(i).optString("title"));
+                filme.setPosterPath(jsonResultado.getJSONObject(i).optString("poster_path"));
+                filme.setResumo(jsonResultado.getJSONObject(i).optString("overview"));
+                filme.setMediaVoto(jsonResultado.getJSONObject(i).optDouble("vote_average"));
+
+                String dateStr = jsonResultado.getJSONObject(i).optString("release_date");
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 try {
                     filme.setDataLancamento(sdf.parse(dateStr));

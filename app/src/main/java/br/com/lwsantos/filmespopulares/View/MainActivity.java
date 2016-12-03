@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -94,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskDelegate
 
     private void carregarFilmes(){
 
+        Context context = MainActivity.this;
+
         if(verificarConexao()) {
             //Captura as configuracao do aplicativo definido no SettingsActivity
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -104,13 +107,23 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskDelegate
             new TheMovieDBAsync(this).execute(classificacao);
         }
         else{
-            Toast.makeText(this, getString(R.string.msg_erro_conexao), Toast.LENGTH_LONG).show();
+            //Se não há	conexão disponível, exibe a mensagem
+            View view = findViewById(R.id.activity_main);
+
+            Snackbar snackbar = Snackbar.make(view, getString(R.string.msg_erro_conexao), Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(getString(R.string.acao_atualizar), new View.OnClickListener() {
+                //Ao clicar na snackbar, uma nova tentativa de atualizar a lista é efetuada :-)
+                @Override
+                public void onClick(View view) {
+                    carregarFilmes();
+                }
+            });
+            snackbar.show();
         }
     }
 
     private boolean verificarConexao() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }

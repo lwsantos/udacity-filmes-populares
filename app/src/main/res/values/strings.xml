@@ -29,4 +29,5 @@
     <string name="formato_data">MM/yyyy</string>
 
     <string name="msg_erro_conexao">Verifique sua conexão com a Internet</string>
+    <string name="acao_atualizar">Atualizar</string>
 </resources>
