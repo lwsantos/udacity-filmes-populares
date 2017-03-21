@@ -22,7 +22,7 @@ import br.com.lwsantos.filmespopulares.Model.Filme;
 
 public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Filme>> {
 
-    private final static String KEY = "MOVIE DBAsync API KEY";
+    private final static String KEY = "6b54a4341820c5980eabe7488c4c636d";
     private final static String LANGUAGE = "pt-BR";
 
     private AsyncTaskDelegate mDelegate = null;
