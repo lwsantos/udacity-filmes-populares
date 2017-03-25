@@ -73,6 +73,17 @@
             android:layout_below="@+id/lblMediaVoto"
             android:layout_alignLeft="@id/lblMediaVoto"
             android:layout_alignStart="@id/lblMediaVoto" />
+        
+        <ImageButton
+            android:id="@+id/btnStar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtMediaVoto"
+            android:layout_alignLeft="@id/txtMediaVoto"
+            android:layout_alignStart="@id/txtMediaVoto"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_star_border_black_36dp"
+            android:background="@null"/>
 
         <TextView
             android:id="@+id/txtSinopse"

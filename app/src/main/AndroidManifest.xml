@@ -36,6 +36,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".View.MainActivity" />
         </activity>
+
+        <provider
+            android:authorities="br.com.lwsantos.filmespopulares"
+            android:name=".Data.MovieProvider"
+            android:exported="false">
+        </provider>
     </application>
 
 </manifest>

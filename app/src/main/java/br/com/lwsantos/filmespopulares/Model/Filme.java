@@ -20,6 +20,8 @@ public class Filme implements Parcelable {
 
     public static final String PARCELABLE_KEY = "filme";
     public static final String URL_IMAGEM = "http://image.tmdb.org/t/p/w185";
+
+    private long idSQLite;
     private String tituloOriginal;
     private String titulo;
     private String posterPath;
@@ -80,8 +82,12 @@ public class Filme implements Parcelable {
         return lista;
     }
 
-    public String getTituloOriginal() {
-        return tituloOriginal;
+    public long getIdSQLite() {
+        return idSQLite;
+    }
+
+    public void setIdSQLite(long idSQLite) {
+        this.idSQLite = idSQLite;
     }
 
     public String getTitulo() {
@@ -90,6 +96,10 @@ public class Filme implements Parcelable {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    public String getTituloOriginal() {
+        return tituloOriginal;
     }
 
     public void setTituloOriginal(String tituloOriginal) {
