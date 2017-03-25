@@ -175,6 +175,8 @@ public class DetailFragment extends Fragment {
             movieId = 0;
         }
 
+        movieCursor.close();
+
         return movieId;
     }
 

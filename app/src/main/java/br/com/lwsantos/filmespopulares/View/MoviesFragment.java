@@ -97,6 +97,7 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
      * Metodos da classe AsyncTaskDelegate
      */
 
+    //Metodo executado quando o processamento da thread em segundo plano é concluido.
     @Override
     public void processFinish(Object output) {
         if(output != null){
@@ -105,9 +106,16 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
 
             mAdapter.addAll(lista);
 
-            if(mPosicaoClique != mGrdFilme.INVALID_POSITION) {
-                // Após carregar as informações, a tela realiza um scrool até a posição do clique.
-                mGrdFilme.smoothScrollToPosition(mPosicaoClique);
+            //Verifica se há itens a serem exibidos.
+            //Caso não exista, exibe mensagem ao usuário.
+            if(lista.size() == 0){
+                Toast.makeText(getContext(), getString(R.string.msg_nenhum_item), Toast.LENGTH_LONG).show();
+            }
+            else {
+                if (mPosicaoClique != mGrdFilme.INVALID_POSITION) {
+                    // Após carregar as informações, a tela realiza um scrool até a posição do clique.
+                    mGrdFilme.smoothScrollToPosition(mPosicaoClique);
+                }
             }
         }
         else{
@@ -128,7 +136,7 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
             String classificacao = sharedPreferences.getString(getString(R.string.pref_classificacao_key), getString(R.string.pref_classificacao_default));
 
             //Executa a thread em segundo plano para capturar a lista de filmes
-            new TheMovieDBAsync(this).execute(classificacao);
+            new TheMovieDBAsync(this, getContext()).execute(classificacao);
         }
         else{
             //Se não há	conexão disponível, exibe a mensagem

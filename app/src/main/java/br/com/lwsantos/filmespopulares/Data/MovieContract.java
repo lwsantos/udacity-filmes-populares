@@ -21,6 +21,25 @@ public class MovieContract implements BaseColumns {
     public static final String COLUMN_SINOPSE = "sinopse";
     public static final String COLUMN_MEDIA_VOTO = "mediaVoto";
     public static final String COLUMN_POSTER = "poster";
+
+    //Projeção das colunas a serem utilizadas nas consultas.
+    //A projeção auxlia para não precisar repetir as colunas e indices nas consultas das telas
+    public static final String[] MOVIE_PROJECTION = new String[] {
+            _ID,
+            COLUMN_TITULO,
+            COLUMN_DATA_LANCAMENTO,
+            COLUMN_SINOPSE,
+            COLUMN_MEDIA_VOTO,
+            COLUMN_POSTER
+    };
+
+    //Indices da projeção
+    public static final int INDEX_ID = 0;
+    public static final int INDEX_TITULO = 1;
+    public static final int INDEX_DATA_LANCAMENTO = 2;
+    public static final int INDEX_SINOPSE = 3;
+    public static final int INDEX_MEDIA_VOTO = 4;
+    public static final int INDEX_POSTER = 5;
     /*******************************/
 
 

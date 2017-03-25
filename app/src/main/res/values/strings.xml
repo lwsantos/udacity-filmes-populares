@@ -18,19 +18,19 @@
     <string-array name="pref_classificacao_entries">
         <item>por Popularidade</item>
         <item>por Avaliação</item>
+        <item>Favoritos</item>
     </string-array>
 
     <!--Valores a serem armazenados após o usuário selecionar o item-->
     <string-array name="pref_classificacao_values">
         <item>popular</item>
         <item>top_rated</item>
+        <item>favorite</item>
     </string-array>
 
     <string name="formato_data">MM/yyyy</string>
 
     <string name="msg_erro_conexao">Verifique sua conexão com a Internet</string>
+    <string name="msg_nenhum_item">Não há itens a serem exibidos para essa classificação</string>
     <string name="acao_atualizar">Atualizar</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
