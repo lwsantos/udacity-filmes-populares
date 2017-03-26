@@ -13,22 +13,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
+import br.com.lwsantos.filmespopulares.Adapter.VideoAdapter;
+import br.com.lwsantos.filmespopulares.AsyncTask.VideoAsync;
+import br.com.lwsantos.filmespopulares.Control.Util;
 import br.com.lwsantos.filmespopulares.Data.MovieContract;
+import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
 import br.com.lwsantos.filmespopulares.Model.Filme;
+import br.com.lwsantos.filmespopulares.Model.Video;
 import br.com.lwsantos.filmespopulares.R;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment implements AsyncTaskDelegate {
 
     private Filme mFilme;
+    private VideoAdapter mVideoAdapter;
 
     ImageView mImgPoster;
     TextView mTxtTitulo;
@@ -36,6 +45,7 @@ public class DetailFragment extends Fragment {
     TextView mTxtSinopse;
     TextView mTxtMediaVoto;
     ImageButton mBtnStar;
+    private ListView mListTrailer;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -62,6 +72,10 @@ public class DetailFragment extends Fragment {
             }
         });
 
+        mVideoAdapter = new VideoAdapter(getContext());
+        mListTrailer = (ListView) rootView.findViewById(R.id.lstTrailer);
+        mListTrailer.setAdapter(mVideoAdapter);
+
         //Recupera o filme selecionado na Activity Principal
         Intent itParent = getActivity().getIntent();
         if(itParent != null && itParent.hasExtra(Filme.PARCELABLE_KEY)){
@@ -77,6 +91,27 @@ public class DetailFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    /**
+     * Metodos da classe AsyncTaskDelegate
+     */
+
+    //Metodo executado quando o processamento da thread em segundo plano é concluido.
+    @Override
+    public void processFinish(Object output) {
+        if(output != null){
+            //Recupero a lista retornada pelo asynctask
+            ArrayList<Video> lista = (ArrayList<Video>) output;
+
+            mVideoAdapter.addAll(lista);
+
+            //Após carregar todos os itens, redimensiona o ListView para não ter o Scroll no listView.
+            Util.redimensionarAltura(mListTrailer);
+        }
+        else{
+            Toast.makeText(getContext(), getString(R.string.msg_erro_conexao), Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
@@ -109,6 +144,17 @@ public class DetailFragment extends Fragment {
             }
             else {
                 mBtnStar.setImageResource(R.drawable.ic_star_border_black_36dp);
+            }
+
+            //Verifica se há conexão com a internet.
+            //Se sim, monta a lista de trailers
+            if(Util.verificarConexao(getContext()))
+            {
+                //Executa a thread em segundo plano para capturar a lista de filmes
+                new VideoAsync(this, getContext()).execute(mFilme.getId());
+            }
+            else{
+                Toast.makeText(getContext(), getString(R.string.msg_erro_conexao), Toast.LENGTH_LONG).show();
             }
         }
     }

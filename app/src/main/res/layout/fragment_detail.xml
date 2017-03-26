@@ -51,8 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/lblDataLancamento"
-            android:layout_alignLeft="@+id/lblDataLancamento"
-            android:layout_alignStart="@+id/lblDataLancamento"
+            android:layout_alignLeft="@id/lblDataLancamento"
+            android:layout_alignStart="@id/lblDataLancamento"
             android:textSize="20dp"
             android:textStyle="normal|bold" />
 
@@ -70,7 +70,7 @@
             android:id="@+id/txtMediaVoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/lblMediaVoto"
+            android:layout_below="@id/lblMediaVoto"
             android:layout_alignLeft="@id/lblMediaVoto"
             android:layout_alignStart="@id/lblMediaVoto" />
         
@@ -89,10 +89,37 @@
             android:id="@+id/txtSinopse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imgPoster"
+            android:layout_below="@id/imgPoster"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="14dp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/diveder"
+            android:layout_below="@id/txtSinopse"
+            android:layout_marginTop="7dp"/>
+
+        <TextView
+            android:id="@+id/lblTrailers"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@id/txtSinopse"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="14dp"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="@string/label_trailers"/>
+
+        <ListView
+            android:id="@+id/lstTrailer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/lblTrailers"
+            android:scrollbars="none">
+
+        </ListView>
 
     </RelativeLayout>
 

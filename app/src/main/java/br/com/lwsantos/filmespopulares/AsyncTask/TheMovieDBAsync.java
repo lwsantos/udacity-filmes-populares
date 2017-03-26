@@ -91,7 +91,7 @@ public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Filme>> 
                         return null;
                     } else {
                         jsonStr = buffer.toString();
-                        lista = new Filme().parseJSON(jsonStr);
+                        lista = new MovieControl(mContext).parseJSON(jsonStr);
                     }
                 }
 

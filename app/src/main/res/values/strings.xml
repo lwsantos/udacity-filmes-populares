@@ -6,6 +6,7 @@
 
     <string name="label_data_lancamento">Lançamento</string>
     <string name="label_media_voto">Avaliação</string>
+    <string name="label_trailers">Trailers:</string>
 
     <string name="menu_settings">Configurações</string>
     <string name="menu_atualizar">Atualizar</string>

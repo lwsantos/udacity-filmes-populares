@@ -3,6 +3,12 @@ package br.com.lwsantos.filmespopulares.Control;
 import android.content.Context;
 import android.database.Cursor;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -21,8 +27,7 @@ public class MovieControl {
         mContext = context;
     }
 
-    public ArrayList<Filme> listarFavoritos()
-    {
+    public ArrayList<Filme> listarFavoritos() {
         ArrayList<Filme> lista = new ArrayList<Filme>();
 
         // Realiza uma consulta de todos os filmes inseridos na base local.
@@ -58,6 +63,46 @@ public class MovieControl {
         }
 
         movieCursor.close();
+        return lista;
+    }
+
+    //Metodo para mapear uma String JSON em uma lista de Filmes.
+    public ArrayList<Filme> parseJSON(String jsonStr) throws JSONException {
+
+        ArrayList<Filme> lista = new ArrayList<>();
+
+        if(jsonStr != null) {
+
+            JSONObject json = new JSONObject(jsonStr);
+            JSONArray jsonResultado = json.getJSONArray("results");
+
+            for (int i = 0; i < jsonResultado.length(); i++) {
+                Filme filme = new Filme();
+
+                /* Pode acontecer em alguma situação do campo overview não vir preenchido ou não existir no JSON?
+                Se sim, o ideal neste caso é utilizar o método optString() ao invés do getString(),
+                pois, utilizando o getString(), caso o JSON não contenha a propriedade que você está tentando recuperar o valor,
+                um erro será lançado e o funcionamento da sua aplicação pode ser afetado. */
+
+                filme.setId(jsonResultado.getJSONObject(i).getLong("id"));
+                filme.setTituloOriginal(jsonResultado.getJSONObject(i).optString("original_title"));
+                filme.setTitulo(jsonResultado.getJSONObject(i).optString("title"));
+                filme.setPosterPath(jsonResultado.getJSONObject(i).optString("poster_path"));
+                filme.setResumo(jsonResultado.getJSONObject(i).optString("overview"));
+                filme.setMediaVoto(jsonResultado.getJSONObject(i).optDouble("vote_average"));
+
+                String dateStr = jsonResultado.getJSONObject(i).optString("release_date");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    filme.setDataLancamento(sdf.parse(dateStr));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                lista.add(filme);
+            }
+        }
+
         return lista;
     }
 }
