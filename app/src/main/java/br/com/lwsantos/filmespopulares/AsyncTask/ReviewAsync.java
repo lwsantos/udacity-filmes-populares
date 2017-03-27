@@ -13,38 +13,36 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import br.com.lwsantos.filmespopulares.Control.VideoControl;
+import br.com.lwsantos.filmespopulares.Control.ReviewControl;
 import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
-import br.com.lwsantos.filmespopulares.Model.Video;
+import br.com.lwsantos.filmespopulares.Model.Review;
 
 /**
- * Created by lwsantos on 25/03/17.
+ * Created by lwsantos on 26/03/17.
  */
 
-public class VideoAsync extends AsyncTask<Object, Void, ArrayList<Video>> {
+public class ReviewAsync extends AsyncTask<Object, Void, ArrayList<Review>> {
     private final static String KEY = "6b54a4341820c5980eabe7488c4c636d";
-    private final static String LANGUAGE = "pt-BR";
-
     private AsyncTaskDelegate mDelegate = null;
 
-    public VideoAsync(AsyncTaskDelegate delegate){
+    public ReviewAsync(AsyncTaskDelegate delegate){
         mDelegate = delegate;
     }
+
     @Override
-    protected ArrayList<Video> doInBackground(Object... params) {
-        ArrayList<Video> lista = new ArrayList<>();
+    protected ArrayList<Review> doInBackground(Object... params) {
+        ArrayList<Review> lista = new ArrayList<>();
         String idFilme = String.valueOf(params[0]);
 
-        //Cria a  URL https://api.themoviedb.org/3/movie/[ID MOVIE]/videos?api_key=[KEY]&language=[IDIOMA]
+        //Cria a  URL https://api.themoviedb.org/3/movie/[ID MOVIE]/reviews?api_key=[KEY]
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
                 .authority("api.themoviedb.org")
                 .appendPath("3")
                 .appendPath("movie")
                 .appendPath(idFilme)
-                .appendPath("videos")
-                .appendQueryParameter("api_key", KEY)
-                .appendQueryParameter("language", LANGUAGE);
+                .appendPath("reviews")
+                .appendQueryParameter("api_key", KEY);
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -78,7 +76,7 @@ public class VideoAsync extends AsyncTask<Object, Void, ArrayList<Video>> {
                     return null;
                 } else {
                     jsonStr = buffer.toString();
-                    lista = new VideoControl().parseJSON(jsonStr);
+                    lista = new ReviewControl().parseJSON(jsonStr);
                 }
             }
 
@@ -103,9 +101,9 @@ public class VideoAsync extends AsyncTask<Object, Void, ArrayList<Video>> {
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Video> videos) {
-        super.onPostExecute(videos);
+    protected void onPostExecute(ArrayList<Review> reviews) {
+        super.onPostExecute(reviews);
         if(mDelegate != null)
-            mDelegate.processFinish(videos);
+            mDelegate.processFinish(reviews);
     }
 }

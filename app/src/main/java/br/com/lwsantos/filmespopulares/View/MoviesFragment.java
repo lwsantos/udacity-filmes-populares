@@ -99,7 +99,7 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
 
     //Metodo executado quando o processamento da thread em segundo plano é concluido.
     @Override
-    public void processFinish(Object output) {
+    public void processFinish(ArrayList output) {
         if(output != null){
             //Recupero a lista retornada pelo asynctask
             ArrayList<Filme> lista = (ArrayList<Filme>) output;

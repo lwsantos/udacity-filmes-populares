@@ -21,18 +21,24 @@ public class Util {
 
     //Redimensionar a altura do Height da ListView para a qtde de itens da lista.
     //Com isso não terá scroll
-    public static void redimensionarAltura(ListView listView)
+    public static void redimensionarAltura(Context context, ListView listView)
     {
         int height = 0;
         int qtdeItem = listView.getAdapter().getCount();
 
-        View viewItem = listView.getAdapter().getView(0, null, listView);
-        viewItem.measure(0, 0);
+        for(int i=0; i < qtdeItem; i++) {
+            View viewItem = listView.getAdapter().getView(i, null, listView);
+            viewItem.measure(0,0);
 
-        height = (viewItem.getMeasuredHeight() * qtdeItem) + (listView.getDividerHeight() * qtdeItem);
+            height += viewItem.getMeasuredHeight();
+        }
+
+        height += (listView.getDividerHeight() * qtdeItem);
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = height;
+
         listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 }

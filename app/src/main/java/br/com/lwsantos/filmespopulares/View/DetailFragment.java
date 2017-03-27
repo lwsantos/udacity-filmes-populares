@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +24,15 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import br.com.lwsantos.filmespopulares.Adapter.ReviewAdapter;
 import br.com.lwsantos.filmespopulares.Adapter.VideoAdapter;
+import br.com.lwsantos.filmespopulares.AsyncTask.ReviewAsync;
 import br.com.lwsantos.filmespopulares.AsyncTask.VideoAsync;
 import br.com.lwsantos.filmespopulares.Control.Util;
 import br.com.lwsantos.filmespopulares.Data.MovieContract;
 import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
 import br.com.lwsantos.filmespopulares.Model.Filme;
+import br.com.lwsantos.filmespopulares.Model.Review;
 import br.com.lwsantos.filmespopulares.Model.Video;
 import br.com.lwsantos.filmespopulares.R;
 
@@ -38,14 +43,16 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
 
     private Filme mFilme;
     private VideoAdapter mVideoAdapter;
+    private ReviewAdapter mReviewAdapter;
 
-    ImageView mImgPoster;
-    TextView mTxtTitulo;
-    TextView mTxtDataLancamento;
-    TextView mTxtSinopse;
-    TextView mTxtMediaVoto;
-    ImageButton mBtnStar;
+    private ImageView mImgPoster;
+    private TextView mTxtTitulo;
+    private TextView mTxtDataLancamento;
+    private TextView mTxtSinopse;
+    private TextView mTxtMediaVoto;
+    private ImageButton mBtnStar;
     private ListView mListTrailer;
+    private RecyclerView mListReview;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -76,6 +83,11 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
         mListTrailer = (ListView) rootView.findViewById(R.id.lstTrailer);
         mListTrailer.setAdapter(mVideoAdapter);
 
+        mReviewAdapter = new ReviewAdapter(getContext());
+        mListReview = (RecyclerView) rootView.findViewById(R.id.lstReview);
+        mListReview.setLayoutManager(new LinearLayoutManager(getContext()));
+        mListReview.setAdapter(mReviewAdapter);
+
         //Recupera o filme selecionado na Activity Principal
         Intent itParent = getActivity().getIntent();
         if(itParent != null && itParent.hasExtra(Filme.PARCELABLE_KEY)){
@@ -97,17 +109,26 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
      * Metodos da classe AsyncTaskDelegate
      */
 
-    //Metodo executado quando o processamento da thread em segundo plano é concluido.
+    //Metodo executado quando o processamento da thread asynctask em segundo plano é concluido.
     @Override
-    public void processFinish(Object output) {
+    public void processFinish(ArrayList output) {
         if(output != null){
-            //Recupero a lista retornada pelo asynctask
-            ArrayList<Video> lista = (ArrayList<Video>) output;
 
-            mVideoAdapter.addAll(lista);
+            //Verifica se o array é do tipo Video
+            if(output.size() > 0 && output.get(0).getClass() == Video.class)
+            {
+                ArrayList<Video> listaVideo = (ArrayList<Video>) output;
+                mVideoAdapter.addAll(listaVideo);
 
-            //Após carregar todos os itens, redimensiona o ListView para não ter o Scroll no listView.
-            Util.redimensionarAltura(mListTrailer);
+                //Após carregar todos os itens, redimensiona o ListView para não ter o Scroll no listView.
+                Util.redimensionarAltura(getContext(), mListTrailer);
+            }
+            //Verifica se o array é do tipo review
+            else if(output.size() > 0 && output.get(0).getClass() == Review.class)
+            {
+                ArrayList<Review> listaReview = (ArrayList<Review>) output;
+                mReviewAdapter.addAll(listaReview);
+            }
         }
         else{
             Toast.makeText(getContext(), getString(R.string.msg_erro_conexao), Toast.LENGTH_LONG).show();
@@ -150,8 +171,11 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
             //Se sim, monta a lista de trailers
             if(Util.verificarConexao(getContext()))
             {
-                //Executa a thread em segundo plano para capturar a lista de filmes
-                new VideoAsync(this, getContext()).execute(mFilme.getId());
+                //Executa a thread em segundo plano para capturar a lista de trailers
+                new VideoAsync(this).execute(mFilme.getId());
+
+                //Executa a thread em segundo plano para capturar a lista de reviews
+                new ReviewAsync(this).execute(mFilme.getId());
             }
             else{
                 Toast.makeText(getContext(), getString(R.string.msg_erro_conexao), Toast.LENGTH_LONG).show();
