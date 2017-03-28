@@ -80,7 +80,8 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
 
         mVideoAdapter = new VideoAdapter(getContext());
         mListTrailer = (RecyclerView) rootView.findViewById(R.id.lstTrailer);
-        mListTrailer.setLayoutManager(new LinearLayoutManager(getContext()));
+        //Define a rolagem do RecyclerView como Horizontal
+        mListTrailer.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mListTrailer.setAdapter(mVideoAdapter);
 
         mReviewAdapter = new ReviewAdapter(getContext());
@@ -201,6 +202,7 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
 
             // Define os colunas e os respectivos valores a serem inseridos.
             // O proprio Content Provider sabe o tipo do valor a ser inserido.
+            movieValues.put(MovieContract.COLUMN_ID_API, mFilme.getId());
             movieValues.put(MovieContract.COLUMN_TITULO, mFilme.getTitulo());
             movieValues.put(MovieContract.COLUMN_DATA_LANCAMENTO, parser.format(mFilme.getDataLancamento()));
             movieValues.put(MovieContract.COLUMN_POSTER, mFilme.getPosterPath());

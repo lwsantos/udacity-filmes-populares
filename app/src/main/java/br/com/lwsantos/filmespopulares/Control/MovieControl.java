@@ -39,27 +39,24 @@ public class MovieControl {
                 null,
                 null
         );
-
-        //if(movieCursor.moveToFirst()) {
         for(int i = 0; i < movieCursor.getCount(); i++){
             movieCursor.moveToPosition(i);
-        //    do {
-                Filme filme = new Filme();
-                filme.setIdSQLite(movieCursor.getLong(MovieContract.INDEX_ID));
-                filme.setTitulo(movieCursor.getString(MovieContract.INDEX_TITULO));
-                filme.setResumo(movieCursor.getString(MovieContract.INDEX_SINOPSE));
-                filme.setMediaVoto(movieCursor.getDouble(MovieContract.INDEX_MEDIA_VOTO));
-                filme.setPosterPath(movieCursor.getString(MovieContract.INDEX_POSTER));
+            Filme filme = new Filme();
+            filme.setId(movieCursor.getLong(MovieContract.INDEX_ID_API));
+            filme.setIdSQLite(movieCursor.getLong(MovieContract.INDEX_ID));
+            filme.setTitulo(movieCursor.getString(MovieContract.INDEX_TITULO));
+            filme.setResumo(movieCursor.getString(MovieContract.INDEX_SINOPSE));
+            filme.setMediaVoto(movieCursor.getDouble(MovieContract.INDEX_MEDIA_VOTO));
+            filme.setPosterPath(movieCursor.getString(MovieContract.INDEX_POSTER));
 
-                //Recupera a data da base local que esta armazenado como milesegundos.
-                //Ao inserir no objeto, o valor em milisegundos (long) é convertido em data.
-                long data_lancamento = movieCursor.getLong(MovieContract.INDEX_DATA_LANCAMENTO);
-                filme.setDataLancamento(new Date(data_lancamento));
+            //Recupera a data da base local que esta armazenado como milesegundos.
+            //Ao inserir no objeto, o valor em milisegundos (long) é convertido em data.
+            long data_lancamento = movieCursor.getLong(MovieContract.INDEX_DATA_LANCAMENTO);
+            filme.setDataLancamento(new Date(data_lancamento));
 
-                lista.add(filme);
+            lista.add(filme);
 
-                movieCursor.moveToNext();
-        //    } while (movieCursor.moveToNext());
+            movieCursor.moveToNext();
         }
 
         movieCursor.close();
