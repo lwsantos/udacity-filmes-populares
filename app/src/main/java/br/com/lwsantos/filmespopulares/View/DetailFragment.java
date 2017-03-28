@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +50,7 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
     private TextView mTxtSinopse;
     private TextView mTxtMediaVoto;
     private ImageButton mBtnStar;
-    private ListView mListTrailer;
+    private RecyclerView mListTrailer;
     private RecyclerView mListReview;
 
     public DetailFragment() {
@@ -80,7 +79,8 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
         });
 
         mVideoAdapter = new VideoAdapter(getContext());
-        mListTrailer = (ListView) rootView.findViewById(R.id.lstTrailer);
+        mListTrailer = (RecyclerView) rootView.findViewById(R.id.lstTrailer);
+        mListTrailer.setLayoutManager(new LinearLayoutManager(getContext()));
         mListTrailer.setAdapter(mVideoAdapter);
 
         mReviewAdapter = new ReviewAdapter(getContext());
@@ -119,9 +119,6 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
             {
                 ArrayList<Video> listaVideo = (ArrayList<Video>) output;
                 mVideoAdapter.addAll(listaVideo);
-
-                //Após carregar todos os itens, redimensiona o ListView para não ter o Scroll no listView.
-                Util.redimensionarAltura(getContext(), mListTrailer);
             }
             //Verifica se o array é do tipo review
             else if(output.size() > 0 && output.get(0).getClass() == Review.class)
