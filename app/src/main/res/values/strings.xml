@@ -9,12 +9,8 @@
     <string name="label_trailers">Trailers</string>
     <string name="label_reviews">Revisões</string>
 
-    <string name="menu_settings">Configurações</string>
     <string name="menu_atualizar">Atualizar</string>
-
-    <string name="pref_classificacao_key" translatable="false">classificacao</string>
     <string name="pref_classificacao_label" translatable="false">Classificação</string>
-    <string name="pref_classificacao_default" translatable="false">popular</string>
 
     <!--Valores que serão exibidos no combo para o usuário selecionar-->
     <string-array name="pref_classificacao_entries">
@@ -34,5 +30,6 @@
 
     <string name="msg_erro_conexao">Verifique sua conexão com a Internet</string>
     <string name="msg_nenhum_item">Não há itens a serem exibidos para essa classificação</string>
+    <string name="msg_atualizado">Filmes atualizados ;)</string>
     <string name="acao_atualizar">Atualizar</string>
 </resources>

@@ -2,14 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <item
-        android:id="@+id/men_settings"
-        android:title="@string/menu_settings"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/men_atualizar"
         android:title="@string/menu_atualizar"
-        app:showAsAction="never"/>
+        android:icon="@drawable/ic_refresh_white_36dp"
+        app:showAsAction="ifRoom"/>
 
 </menu>
