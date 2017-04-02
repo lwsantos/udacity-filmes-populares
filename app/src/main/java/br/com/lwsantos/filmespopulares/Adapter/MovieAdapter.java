@@ -1,28 +1,29 @@
 package br.com.lwsantos.filmespopulares.Adapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import br.com.lwsantos.filmespopulares.Holder.MovieHolder;
 import br.com.lwsantos.filmespopulares.Model.Filme;
+import br.com.lwsantos.filmespopulares.R;
 
 /**
  * Created by lwsantos on 15/11/16.
  */
 
-public class ImageAdapter extends BaseAdapter {
+public class MovieAdapter extends BaseAdapter {
 
     private ArrayList<Filme> mListaFilmes;
     private Context mContext;
 
-    public ImageAdapter(Context context){
+    public MovieAdapter(Context context){
         mContext = context;
         mListaFilmes = new ArrayList<>();
     }
@@ -45,26 +46,24 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ImageView imagemFilme;
+        MovieHolder viewHolder;
 
         if(convertView == null){
-            // Configura o componente de imagem
-            int widthScreen = parent.getWidth(); //Pega a largura do GridView
-            int widthImagem = widthScreen/2; // A lagura da imagem sera a metade da largura do GridView
-            int heightImagem = (int)(widthImagem * 1.35); // A altura da imagem sera 1,35 vezes a largura
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_movie, parent, false);
+            viewHolder = new MovieHolder(convertView, parent.getWidth());
 
-            imagemFilme = new ImageView(mContext);
-            imagemFilme.setLayoutParams(new GridView.LayoutParams(widthImagem,heightImagem));
-            imagemFilme.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imagemFilme.setPadding(8, 8, 8, 8);
+            convertView.setTag(viewHolder);
         }
         else{
-            imagemFilme = (ImageView) convertView;
+            viewHolder = (MovieHolder) convertView.getTag();
         }
 
-        Picasso.with(mContext).load(Filme.URL_IMAGEM + mListaFilmes.get(position).getPosterPath()).into(imagemFilme);
+        if(mListaFilmes.size() > 0) {
 
-        return imagemFilme;
+            Picasso.with(mContext).load(Filme.URL_IMAGEM + mListaFilmes.get(position).getPosterPath()).into(viewHolder.mImgPoster);
+        }
+
+        return convertView;
 
     }
 

@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import br.com.lwsantos.filmespopulares.Adapter.ImageAdapter;
+import br.com.lwsantos.filmespopulares.Adapter.MovieAdapter;
 import br.com.lwsantos.filmespopulares.AsyncTask.TheMovieDBAsync;
 import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
 import br.com.lwsantos.filmespopulares.Model.Filme;
@@ -29,7 +29,7 @@ import br.com.lwsantos.filmespopulares.R;
 
 public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
 
-    private ImageAdapter mAdapter;
+    private MovieAdapter mAdapter;
     private GridView mGrdFilme;
     private Spinner mSpnClassificacao;
 
@@ -56,7 +56,7 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
 
-        mAdapter = new ImageAdapter(getContext());
+        mAdapter = new MovieAdapter(getContext());
 
         mGrdFilme = (GridView) rootView.findViewById(R.id.grdFilmes);
         mGrdFilme.setAdapter(mAdapter);
