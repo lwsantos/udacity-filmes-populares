@@ -16,13 +16,13 @@ import java.util.ArrayList;
 
 import br.com.lwsantos.filmespopulares.Control.MovieControl;
 import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
-import br.com.lwsantos.filmespopulares.Model.Filme;
+import br.com.lwsantos.filmespopulares.Model.Movie;
 
 /**
  * Created by lwsantos on 15/11/16.
  */
 
-public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Filme>> {
+public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Movie>> {
 
     private final static String KEY = "6b54a4341820c5980eabe7488c4c636d";
     private final static String LANGUAGE = "pt-BR";
@@ -37,9 +37,9 @@ public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Filme>> 
 
 
     @Override
-    protected ArrayList<Filme> doInBackground(Object... params) {
+    protected ArrayList<Movie> doInBackground(Object... params) {
 
-        ArrayList<Filme> lista = new ArrayList<>();
+        ArrayList<Movie> lista = new ArrayList<>();
         String classificacao = (String) params[0];
 
         //Verifica se a classificação esta definido como favorito
@@ -117,7 +117,7 @@ public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Filme>> 
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Filme> filmes) {
+    protected void onPostExecute(ArrayList<Movie> filmes) {
         super.onPostExecute(filmes);
         if(mDelegate != null)
             mDelegate.processFinish(filmes);

@@ -1,11 +1,17 @@
 package br.com.lwsantos.filmespopulares.Control;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 /**
  * Created by lwsantos on 25/03/17.
@@ -40,5 +46,37 @@ public class Util {
 
         listView.setLayoutParams(params);
         listView.requestLayout();
+    }
+
+    public static String armazenarImagem(Bitmap imagem, String nomeArquivo) {
+
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Filmes Populares");
+
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
+
+        // Create a media file name
+        File mediaFile;
+        mediaFile = new File(mediaStorageDir.getPath(), nomeArquivo);
+
+        try {
+
+            if (mediaFile == null) {
+                return "";
+            }
+
+            FileOutputStream fos = new FileOutputStream(mediaFile);
+            imagem.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+        }
+        catch (Exception e)
+        {
+            Log.e("MOVIE", e.getMessage());
+        }
+
+        return mediaFile.getPath();
     }
 }

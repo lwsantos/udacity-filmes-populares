@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by lwsantos on 15/11/16.
  */
 
-public class Filme implements Parcelable {
+public class Movie implements Parcelable {
 
     public static final String PARCELABLE_KEY = "filme";
     public static final String URL_IMAGEM = "http://image.tmdb.org/t/p/w185";
@@ -19,15 +19,16 @@ public class Filme implements Parcelable {
     private String tituloOriginal;
     private String titulo;
     private String posterPath;
+    private String posterLocalPath;
     private String resumo;
     private Double mediaVoto;
     private Date dataLancamento;
 
-    public Filme(){
+    public Movie(){
 
     }
 
-    protected Filme(Parcel in) {
+    protected Movie(Parcel in) {
         id = in.readLong();
         tituloOriginal = in.readString();
         titulo = in.readString();
@@ -44,7 +45,6 @@ public class Filme implements Parcelable {
     public void setId(long id) {
         this.id = id;
     }
-
 
     public long getIdSQLite() {
         return idSQLite;
@@ -78,6 +78,14 @@ public class Filme implements Parcelable {
         this.posterPath = posterPath;
     }
 
+    public String getPosterLocalPath() {
+        return posterLocalPath;
+    }
+
+    public void setPosterLocalPath(String posterLocalPath) {
+        this.posterLocalPath = posterLocalPath;
+    }
+
     public String getResumo() {
         return resumo;
     }
@@ -102,13 +110,13 @@ public class Filme implements Parcelable {
         this.dataLancamento = dataLancamento;
     }
 
-    public static final Parcelable.Creator<Filme> CREATOR = new Parcelable.Creator<Filme>() {
-        public Filme createFromParcel(Parcel in) {
-            return new Filme(in);
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
         }
 
-        public Filme[] newArray(int size) {
-            return new Filme[size];
+        public Movie[] newArray(int size) {
+            return new Movie[size];
         }
     };
 

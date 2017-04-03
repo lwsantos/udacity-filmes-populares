@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import br.com.lwsantos.filmespopulares.Data.MovieContract;
-import br.com.lwsantos.filmespopulares.Model.Filme;
+import br.com.lwsantos.filmespopulares.Model.Movie;
 
 /**
  * Created by lwsantos on 25/03/17.
@@ -27,8 +27,8 @@ public class MovieControl {
         mContext = context;
     }
 
-    public ArrayList<Filme> listarFavoritos() {
-        ArrayList<Filme> lista = new ArrayList<Filme>();
+    public ArrayList<Movie> listarFavoritos() {
+        ArrayList<Movie> lista = new ArrayList<Movie>();
 
         // Realiza uma consulta de todos os filmes inseridos na base local.
 
@@ -41,13 +41,13 @@ public class MovieControl {
         );
         for(int i = 0; i < movieCursor.getCount(); i++){
             movieCursor.moveToPosition(i);
-            Filme filme = new Filme();
+            Movie filme = new Movie();
             filme.setId(movieCursor.getLong(MovieContract.INDEX_ID_API));
             filme.setIdSQLite(movieCursor.getLong(MovieContract.INDEX_ID));
             filme.setTitulo(movieCursor.getString(MovieContract.INDEX_TITULO));
             filme.setResumo(movieCursor.getString(MovieContract.INDEX_SINOPSE));
             filme.setMediaVoto(movieCursor.getDouble(MovieContract.INDEX_MEDIA_VOTO));
-            filme.setPosterPath(movieCursor.getString(MovieContract.INDEX_POSTER));
+            filme.setPosterLocalPath(movieCursor.getString(MovieContract.INDEX_POSTER));
 
             //Recupera a data da base local que esta armazenado como milesegundos.
             //Ao inserir no objeto, o valor em milisegundos (long) é convertido em data.
@@ -64,9 +64,9 @@ public class MovieControl {
     }
 
     //Metodo para mapear uma String JSON em uma lista de Filmes.
-    public ArrayList<Filme> parseJSON(String jsonStr) throws JSONException {
+    public ArrayList<Movie> parseJSON(String jsonStr) throws JSONException {
 
-        ArrayList<Filme> lista = new ArrayList<>();
+        ArrayList<Movie> lista = new ArrayList<>();
 
         if(jsonStr != null) {
 
@@ -74,7 +74,7 @@ public class MovieControl {
             JSONArray jsonResultado = json.getJSONArray("results");
 
             for (int i = 0; i < jsonResultado.length(); i++) {
-                Filme filme = new Filme();
+                Movie filme = new Movie();
 
                 /* Pode acontecer em alguma situação do campo overview não vir preenchido ou não existir no JSON?
                 Se sim, o ideal neste caso é utilizar o método optString() ao invés do getString(),

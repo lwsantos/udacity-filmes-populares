@@ -5,6 +5,8 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -30,7 +33,7 @@ import br.com.lwsantos.filmespopulares.AsyncTask.VideoAsync;
 import br.com.lwsantos.filmespopulares.Control.Util;
 import br.com.lwsantos.filmespopulares.Data.MovieContract;
 import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
-import br.com.lwsantos.filmespopulares.Model.Filme;
+import br.com.lwsantos.filmespopulares.Model.Movie;
 import br.com.lwsantos.filmespopulares.Model.Review;
 import br.com.lwsantos.filmespopulares.Model.Video;
 import br.com.lwsantos.filmespopulares.R;
@@ -40,7 +43,7 @@ import br.com.lwsantos.filmespopulares.R;
  */
 public class DetailFragment extends Fragment implements AsyncTaskDelegate {
 
-    private Filme mFilme;
+    private Movie mFilme;
     private VideoAdapter mVideoAdapter;
     private ReviewAdapter mReviewAdapter;
 
@@ -91,14 +94,13 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
 
         //Recupera o filme selecionado na Activity Principal
         Intent itParent = getActivity().getIntent();
-        if(itParent != null && itParent.hasExtra(Filme.PARCELABLE_KEY)){
-            mFilme = (Filme) itParent.getParcelableExtra(Filme.PARCELABLE_KEY);
+        if(itParent != null && itParent.hasExtra(Movie.PARCELABLE_KEY)){
+            mFilme = (Movie) itParent.getParcelableExtra(Movie.PARCELABLE_KEY);
 
             // Antes de Preencher o formulario, verifica se esta salvo na base de dados.
             // No metodo de preenchimento será verificado se idSQLite é maior que zero.
             // Se for, deixa o botão de favorito pressionado
-            long idSQLite = consultarBaseLocal();
-            mFilme.setIdSQLite(idSQLite);
+            consultarBaseLocal();
 
             preencherFormulario();
         }
@@ -149,20 +151,21 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
             mImgPoster.setMinimumWidth(widthImagem);
             mImgPoster.setMinimumHeight(heightImagem);
 
-
-            Picasso.with(getContext()).load(Filme.URL_IMAGEM + mFilme.getPosterPath()).resize(widthImagem, heightImagem).into(mImgPoster);
             mTxtTitulo.setText(mFilme.getTitulo());
             SimpleDateFormat dtFormat = new SimpleDateFormat(getString(R.string.formato_data));
             mTxtDataLancamento.setText(dtFormat.format(mFilme.getDataLancamento()));
             mTxtMediaVoto.setText(String.format("%.2f", mFilme.getMediaVoto()));
             mTxtSinopse.setText(mFilme.getResumo());
 
+            //Verifica se o filme está na base local (idSQLite > 0)
             if(mFilme.getIdSQLite() > 0)
             {
                 mBtnStar.setImageResource(R.drawable.ic_star_black_36dp);
+                Picasso.with(getContext()).load(new File(mFilme.getPosterLocalPath())).resize(widthImagem, heightImagem).into(mImgPoster);
             }
             else {
                 mBtnStar.setImageResource(R.drawable.ic_star_border_black_36dp);
+                Picasso.with(getContext()).load(Movie.URL_IMAGEM + mFilme.getPosterPath()).resize(widthImagem, heightImagem).into(mImgPoster);
             }
 
             //Verifica se há conexão com a internet.
@@ -197,15 +200,20 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
         else
         {
             ContentValues movieValues = new ContentValues();
-
-            final SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
+            //Capturar Bitmap do ImageView do poster do filme
+            Bitmap bitmap = ((BitmapDrawable)mImgPoster.getDrawable()).getBitmap();
+            //Define o nome do arquivo com ID.png
+            String nomeArquivo = mFilme.getId() + ".png";
+            //Armazena a imagem no dispositivo
+            String posterPathLocal = Util.armazenarImagem(bitmap, nomeArquivo);
+            mFilme.setPosterLocalPath(posterPathLocal);
 
             // Define os colunas e os respectivos valores a serem inseridos.
             // O proprio Content Provider sabe o tipo do valor a ser inserido.
             movieValues.put(MovieContract.COLUMN_ID_API, mFilme.getId());
             movieValues.put(MovieContract.COLUMN_TITULO, mFilme.getTitulo());
-            movieValues.put(MovieContract.COLUMN_DATA_LANCAMENTO, parser.format(mFilme.getDataLancamento()));
-            movieValues.put(MovieContract.COLUMN_POSTER, mFilme.getPosterPath());
+            movieValues.put(MovieContract.COLUMN_DATA_LANCAMENTO, mFilme.getDataLancamento().getTime());
+            movieValues.put(MovieContract.COLUMN_POSTER, mFilme.getPosterLocalPath());
             movieValues.put(MovieContract.COLUMN_MEDIA_VOTO, mFilme.getMediaVoto());
             movieValues.put(MovieContract.COLUMN_SINOPSE, mFilme.getResumo());
 
@@ -221,32 +229,24 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
     }
 
     // Esse metodo irá consultar, atraves do titulo do filme, a base local para verificar se o mesmo já está inserido.
-    private long consultarBaseLocal()
+    private void consultarBaseLocal()
     {
-        long movieId;
-
         // Realiza uma consulta para verificar se o filme já foi adicionado.
         // A consulta é realizada através do titulo
         Cursor movieCursor = getContext().getContentResolver().query(
                 MovieContract.buildMovieTitle(mFilme.getTitulo()),
-                new String[]{MovieContract._ID},
+                MovieContract.MOVIE_PROJECTION,
                 null,
                 null,
                 null);
 
-        //Se o filme existe, significa que o que queremos é desfavoritar.
-        //Para isso excluimos da base de dados.
+        //Atualiza os dados do filme com o ID do SQLite e o local do poster
         if (movieCursor.moveToFirst()) {
-            int movieIdIndex = movieCursor.getColumnIndex(MovieContract._ID);
-            movieId = movieCursor.getLong(movieIdIndex);
-        }
-        else {
-            movieId = 0;
+            mFilme.setIdSQLite(movieCursor.getLong(MovieContract.INDEX_ID));
+            mFilme.setPosterLocalPath(movieCursor.getString(MovieContract.INDEX_POSTER));
         }
 
         movieCursor.close();
-
-        return movieId;
     }
 
 }

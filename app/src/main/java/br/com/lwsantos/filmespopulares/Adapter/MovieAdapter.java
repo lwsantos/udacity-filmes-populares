@@ -8,10 +8,11 @@ import android.widget.BaseAdapter;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import br.com.lwsantos.filmespopulares.Holder.MovieHolder;
-import br.com.lwsantos.filmespopulares.Model.Filme;
+import br.com.lwsantos.filmespopulares.Model.Movie;
 import br.com.lwsantos.filmespopulares.R;
 
 /**
@@ -20,7 +21,7 @@ import br.com.lwsantos.filmespopulares.R;
 
 public class MovieAdapter extends BaseAdapter {
 
-    private ArrayList<Filme> mListaFilmes;
+    private ArrayList<Movie> mListaFilmes;
     private Context mContext;
 
     public MovieAdapter(Context context){
@@ -60,7 +61,17 @@ public class MovieAdapter extends BaseAdapter {
 
         if(mListaFilmes.size() > 0) {
 
-            Picasso.with(mContext).load(Filme.URL_IMAGEM + mListaFilmes.get(position).getPosterPath()).into(viewHolder.mImgPoster);
+            if(mListaFilmes.get(position).getIdSQLite() > 0)
+            {
+                // Se o Filme tiver salvo na base local, recupera a imagem localmente
+                Picasso.with(mContext).load(new File(mListaFilmes.get(position).getPosterLocalPath())).into(viewHolder.mImgPoster);
+            }
+            else
+            {
+                // Senão recupera da internet
+                Picasso.with(mContext).load(Movie.URL_IMAGEM + mListaFilmes.get(position).getPosterPath()).into(viewHolder.mImgPoster);
+            }
+
         }
 
         return convertView;
@@ -68,7 +79,7 @@ public class MovieAdapter extends BaseAdapter {
     }
 
     //Metodo para atualizar a lista de filmes do adaptador
-    public void addAll(ArrayList<Filme> lista){
+    public void addAll(ArrayList<Movie> lista){
         mListaFilmes = lista;
         notifyDataSetChanged();
     }

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import br.com.lwsantos.filmespopulares.Adapter.MovieAdapter;
 import br.com.lwsantos.filmespopulares.AsyncTask.TheMovieDBAsync;
 import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
-import br.com.lwsantos.filmespopulares.Model.Filme;
+import br.com.lwsantos.filmespopulares.Model.Movie;
 import br.com.lwsantos.filmespopulares.R;
 
 public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
@@ -66,8 +66,8 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent itDetail = new Intent(getActivity(), DetailActivity.class);
-                Filme filme = (Filme) mAdapter.getItem(position);
-                itDetail.putExtra(Filme.PARCELABLE_KEY, filme);
+                Movie filme = (Movie) mAdapter.getItem(position);
+                itDetail.putExtra(Movie.PARCELABLE_KEY, filme);
                 startActivity(itDetail);
 
                 //Grava a posição do clique para ser utilizado quando retornar
@@ -172,7 +172,7 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
     public void processFinish(ArrayList output) {
         if(output != null){
             //Recupero a lista retornada pelo asynctask
-            ArrayList<Filme> lista = (ArrayList<Filme>) output;
+            ArrayList<Movie> lista = (ArrayList<Movie>) output;
 
             mAdapter.addAll(lista);
 
@@ -199,11 +199,13 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
 
     private void carregarFilmes(){
 
-        if(verificarConexao()) {
-            // Define variavel que contém os array de valores do Spinner
-            TypedArray spinnerValues = getResources().obtainTypedArray(R.array.pref_classificacao_values);
-            // De acordo com o posição do item selecionado, caputara o valor do array.
-            String classificacao = spinnerValues.getString(mSpnClassificacao.getSelectedItemPosition());
+        // Define variavel que contém os array de valores do Spinner
+        TypedArray spinnerValues = getResources().obtainTypedArray(R.array.pref_classificacao_values);
+        // De acordo com o posição do item selecionado, caputara o valor do array.
+        String classificacao = spinnerValues.getString(mSpnClassificacao.getSelectedItemPosition());
+
+        //Se não tiver conexão porém a classificação for favorito, realiza a consulta pois está armazenado localmente.
+        if(verificarConexao() || classificacao.equals("favorite")) {
             //Executa a thread em segundo plano para capturar a lista de filmes
             new TheMovieDBAsync(this, getContext()).execute(classificacao);
         }
