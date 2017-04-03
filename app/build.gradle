@@ -11,7 +11,11 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
+        debug{
+            buildConfigField "String", "THE_MOVIE_DB_API_KEY", THE_MOVIE_DB_API_KEY
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

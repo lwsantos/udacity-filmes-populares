@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+import br.com.lwsantos.filmespopulares.BuildConfig;
 import br.com.lwsantos.filmespopulares.Control.VideoControl;
 import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
 import br.com.lwsantos.filmespopulares.Model.Video;
@@ -22,7 +23,7 @@ import br.com.lwsantos.filmespopulares.Model.Video;
  */
 
 public class VideoAsync extends AsyncTask<Object, Void, ArrayList<Video>> {
-    private final static String KEY = "6b54a4341820c5980eabe7488c4c636d";
+    private final static String KEY = BuildConfig.THE_MOVIE_DB_API_KEY;
     private final static String LANGUAGE = "pt-BR";
 
     private AsyncTaskDelegate mDelegate = null;
