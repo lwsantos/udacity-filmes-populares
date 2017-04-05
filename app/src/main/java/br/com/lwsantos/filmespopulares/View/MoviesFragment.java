@@ -1,7 +1,6 @@
 package br.com.lwsantos.filmespopulares.View;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -36,9 +35,22 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
     private static final String KEY_POSICAO_CLIQUE = "POSITION";
     private static final String KEY_CLASSIFICACAO = "CLASSIFICACAO";
 
+    // Variavel que a activity informa se há dois paineis.
+    // Se existir dois paineis significa que os detalhes estão sendo exibidos a direita.
+    public Boolean mTwoPane = false;
+
     // Declarar a variavel como static permite que o valor consiga ser recuperado após voltar da tela de Detalhes
     private static int mPosicaoClique = -1;
     private static String mClassificacaoSaved = "";
+
+    /**
+     * Na interface de Callback, toda atividade que contem este fragmento deverá implementar.
+     * Nesse app, a ActicityMain deverá implementar para notificar o item selecionado.
+     * O item selecionado é capturado no evento mGrdFilme.setOnItemClickListener desta classe.
+     */
+    public interface Callback {
+        public void onItemSelected(Movie filme);
+    }
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -65,14 +77,15 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
         mGrdFilme.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent itDetail = new Intent(getActivity(), DetailActivity.class);
+
+                //Passa para o metodo implementado da activity o filme selecioando
                 Movie filme = (Movie) mAdapter.getItem(position);
-                itDetail.putExtra(Movie.PARCELABLE_KEY, filme);
-                startActivity(itDetail);
+                ((Callback) getActivity()).onItemSelected(filme);
 
                 //Grava a posição do clique para ser utilizado quando retornar
                 mPosicaoClique = position;
                 mClassificacaoSaved = mSpnClassificacao.getSelectedItem().toString();
+
             }
         });
 
@@ -80,8 +93,17 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
         mSpnClassificacao.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //Não é necessário pegar o item selecionado, pois ao carregar filmes ele captura essa informação
-                carregarFilmes();
+                // Define variavel que contém os array de valores do Spinner
+                TypedArray spinnerEntries = getResources().obtainTypedArray(R.array.pref_classificacao_entries);
+
+                //Verifica se o spinner foi alterado ou se apenas a tela foi rotacionado.
+                //Se foi alterado executa a condição.
+                if(!spinnerEntries.getString(position).toString().equals(mClassificacaoSaved))
+                {
+                    // Zera a posição do clique pois a lista foi recarregada.
+                    mPosicaoClique = mGrdFilme.INVALID_POSITION;
+                    carregarFilmes();
+                }
             }
 
             @Override
@@ -182,9 +204,22 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
                 Toast.makeText(getContext(), getString(R.string.msg_nenhum_item), Toast.LENGTH_LONG).show();
             }
             else {
+
                 if (mPosicaoClique != mGrdFilme.INVALID_POSITION) {
                     // Após carregar as informações, a tela realiza um scrool até a posição do clique.
                     mGrdFilme.smoothScrollToPosition(mPosicaoClique);
+                }
+                else
+                {
+                    mGrdFilme.smoothScrollToPosition(0);
+                }
+
+                if (mTwoPane && mPosicaoClique == mGrdFilme.INVALID_POSITION)
+                {
+                    //Se a Activity tiver dois paineis (tablet) e nenhum item estiver selecionado,
+                    //seleciona o primeiro.
+                    Movie filme = (Movie) mAdapter.getItem(0);
+                    ((Callback) getActivity()).onItemSelected(filme);
                 }
             }
         }
@@ -222,6 +257,14 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
                 }
             });
             snackbar.show();
+        }
+    }
+
+    public void onLoadItem()
+    {
+        if(mAdapter.getCount() > 0)
+        {
+            mGrdFilme.setSelection(0);
         }
     }
 

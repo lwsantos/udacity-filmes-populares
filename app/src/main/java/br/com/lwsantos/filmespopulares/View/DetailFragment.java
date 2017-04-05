@@ -3,7 +3,6 @@ package br.com.lwsantos.filmespopulares.View;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,7 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +29,7 @@ import br.com.lwsantos.filmespopulares.Adapter.ReviewAdapter;
 import br.com.lwsantos.filmespopulares.Adapter.VideoAdapter;
 import br.com.lwsantos.filmespopulares.AsyncTask.ReviewAsync;
 import br.com.lwsantos.filmespopulares.AsyncTask.VideoAsync;
+import br.com.lwsantos.filmespopulares.Components.PosterImageView;
 import br.com.lwsantos.filmespopulares.Control.Util;
 import br.com.lwsantos.filmespopulares.Data.MovieContract;
 import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
@@ -47,7 +47,8 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
     private VideoAdapter mVideoAdapter;
     private ReviewAdapter mReviewAdapter;
 
-    private ImageView mImgPoster;
+    private LinearLayout mPosterContainer;
+    private PosterImageView mImgPoster;
     private TextView mTxtTitulo;
     private TextView mTxtDataLancamento;
     private TextView mTxtSinopse;
@@ -67,7 +68,8 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         //Localizando os componentes de tela.
-        mImgPoster = (ImageView)rootView.findViewById(R.id.imgPoster);
+        mPosterContainer = (LinearLayout) rootView.findViewById(R.id.poster_container);
+        mImgPoster = (PosterImageView) rootView.findViewById(R.id.imgPoster);
         mTxtTitulo = (TextView) rootView.findViewById(R.id.txtTitulo);
         mTxtDataLancamento = (TextView) rootView.findViewById(R.id.txtDataLancamento);
         mTxtSinopse = (TextView) rootView.findViewById(R.id.txtSinopse);
@@ -93,9 +95,9 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
         mListReview.setAdapter(mReviewAdapter);
 
         //Recupera o filme selecionado na Activity Principal
-        Intent itParent = getActivity().getIntent();
-        if(itParent != null && itParent.hasExtra(Movie.PARCELABLE_KEY)){
-            mFilme = (Movie) itParent.getParcelableExtra(Movie.PARCELABLE_KEY);
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mFilme = arguments.getParcelable(Movie.PARCELABLE_KEY);
 
             // Antes de Preencher o formulario, verifica se esta salvo na base de dados.
             // No metodo de preenchimento será verificado se idSQLite é maior que zero.
@@ -106,6 +108,12 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     /**
@@ -143,14 +151,6 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
     {
         if(mFilme != null)
         {
-            //Define o tamanho da imagem
-            int widthScreen = this.getResources().getDisplayMetrics().widthPixels;
-            int widthImagem = (int) (widthScreen * 0.4); // A imagem tera 40% da largura da tela
-            int heightImagem = (int)(widthImagem * 1.35); // A altura tera 1,35 vezes a largura da imagem
-
-            mImgPoster.setMinimumWidth(widthImagem);
-            mImgPoster.setMinimumHeight(heightImagem);
-
             mTxtTitulo.setText(mFilme.getTitulo());
             SimpleDateFormat dtFormat = new SimpleDateFormat(getString(R.string.formato_data));
             mTxtDataLancamento.setText(dtFormat.format(mFilme.getDataLancamento()));
@@ -161,11 +161,11 @@ public class DetailFragment extends Fragment implements AsyncTaskDelegate {
             if(mFilme.getIdSQLite() > 0)
             {
                 mBtnStar.setImageResource(R.drawable.ic_star_black_36dp);
-                Picasso.with(getContext()).load(new File(mFilme.getPosterLocalPath())).resize(widthImagem, heightImagem).into(mImgPoster);
+                Picasso.with(getContext()).load(new File(mFilme.getPosterLocalPath())).into(mImgPoster);
             }
             else {
                 mBtnStar.setImageResource(R.drawable.ic_star_border_black_36dp);
-                Picasso.with(getContext()).load(Movie.URL_IMAGEM + mFilme.getPosterPath()).resize(widthImagem, heightImagem).into(mImgPoster);
+                Picasso.with(getContext()).load(Movie.URL_IMAGEM + mFilme.getPosterPath()).into(mImgPoster);
             }
 
             //Verifica se há conexão com a internet.
