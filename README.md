@@ -18,4 +18,4 @@ Pare executar o app é necessário informar e definir sua API KEY gerada no site
 ## ScreenShot
 <img src="https://drive.google.com/uc?export=view&id=0B6a5EuiQ7i8uNC1HQ0dTWXRWWTg" width="400px" > <img src="https://drive.google.com/uc?export=view&id=0B6a5EuiQ7i8uU1BHVE5pRkE1eXM" width="400px" >
 
-<img src="https://drive.google.com/uc?export=view&id=0B6a5EuiQ7i8ubEhOMF9oQ0Jla0k" width="400px" > <img src="https://drive.google.com/uc?export=view&id=0B6a5EuiQ7i8uU1BHVE5pRkE1eXM" width="400px" > <img src="https://drive.google.com/uc?export=view&id=0B6a5EuiQ7i8uT2lPWFl6MmZ1NzA" width="400px" >
+<img src="https://drive.google.com/uc?export=view&id=0B6a5EuiQ7i8ubEhOMF9oQ0Jla0k" width="800px" > 
