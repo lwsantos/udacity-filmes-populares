@@ -16,7 +16,7 @@ import br.com.lwsantos.filmespopulares.R;
  * Created by lwsantos on 25/03/17.
  */
 
-public class TrailerHolder  extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class TrailerHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
     public final ImageView mImgTrailer;
     public ArrayList<Video> mListVideo;
     public Context mContext;

@@ -9,30 +9,11 @@
     android:orientation="vertical"
     tools:context="br.com.lwsantos.filmespopulares.View.MoviesFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pref_classificacao_label"
-        android:textSize="10dp"/>
-
-    <android.support.v7.widget.AppCompatSpinner
-        android:id="@+id/spnClassificacao"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/pref_classificacao_entries"
-        android:entryValues="@array/pref_classificacao_values">
-
-    </android.support.v7.widget.AppCompatSpinner>
-
-    <GridView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/grdFilmes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit"
-        android:horizontalSpacing="5dp"
-        android:verticalSpacing="5dp"
-        android:layout_marginTop="10dp">
-
-    </GridView>
+        android:orientation="horizontal">
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

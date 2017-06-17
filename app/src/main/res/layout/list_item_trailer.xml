@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/imgTrailer"
-        android:layout_width="207dp"
-        android:layout_height="115dp"
+        android:layout_width="@dimen/imageView_trailer_width"
+        android:layout_height="@dimen/imageView_trailer_height"
         tools:src="@color/colorGrey"
         android:paddingRight="10dp"/>
 

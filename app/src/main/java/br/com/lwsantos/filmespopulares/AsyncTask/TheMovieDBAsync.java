@@ -1,5 +1,6 @@
 package br.com.lwsantos.filmespopulares.AsyncTask;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,51 +13,47 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 import br.com.lwsantos.filmespopulares.BuildConfig;
 import br.com.lwsantos.filmespopulares.Control.MovieControl;
+import br.com.lwsantos.filmespopulares.Data.MovieContract;
 import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
-import br.com.lwsantos.filmespopulares.Model.Movie;
 
 /**
  * Created by lwsantos on 15/11/16.
  */
 
-public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Movie>> {
+public class TheMovieDBAsync extends AsyncTask <Object, Void, Void> {
 
     private final static String KEY = BuildConfig.THE_MOVIE_DB_API_KEY;
     private final static String LANGUAGE = "pt-BR";
 
     private AsyncTaskDelegate mDelegate = null;
     private Context mContext;
+    private String mClassificacao;
 
-    public TheMovieDBAsync(AsyncTaskDelegate delegate, Context context){
+    public TheMovieDBAsync(AsyncTaskDelegate delegate, Context context, String classificacao){
         mDelegate = delegate;
         mContext = context;
+        mClassificacao = classificacao;
     }
 
 
     @Override
-    protected ArrayList<Movie> doInBackground(Object... params) {
-
-        ArrayList<Movie> lista = new ArrayList<>();
-        String classificacao = (String) params[0];
+    protected Void doInBackground(Object... params) {
 
         //Verifica se a classificação esta definido como favorito
         //Se sim, busca os dados na base local.
         //Senão, consulta pelo webservice
-        if(classificacao.equals("favorite")) {
-            lista = new MovieControl(mContext).listarFavoritos();
-        }
-        else {
+        if(!mClassificacao.equals(MovieContract.CLASSIFICACAO_FAVORITO))
+        {
             //Cria a URL https://api.themoviedb.org/3/movie/CLASSIFICACAO?api_key=KEY&language=IDIOMA
             Uri.Builder builder = new Uri.Builder();
             builder.scheme("https")
                     .authority("api.themoviedb.org")
                     .appendPath("3")
                     .appendPath("movie")
-                    .appendPath(classificacao)
+                    .appendPath(mClassificacao)
                     .appendQueryParameter("api_key", KEY)
                     .appendQueryParameter("language", LANGUAGE);
 
@@ -88,11 +85,12 @@ public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Movie>> 
                     }
 
                     //Se houve um retorno da API armazena na variavel String
-                    if (buffer.length() == 0) {
-                        return null;
-                    } else {
+                    if (buffer.length() > 0) {
                         jsonStr = buffer.toString();
-                        lista = new MovieControl(mContext).parseJSON(jsonStr);
+
+                        ContentValues[] movieValues = new MovieControl(mContext).parseJSON(jsonStr, mClassificacao);
+                        //Insere valores e atualiza a base de dados local
+                        new MovieControl(mContext).builkInsert(movieValues);
                     }
                 }
 
@@ -114,13 +112,13 @@ public class TheMovieDBAsync extends AsyncTask <Object, Void, ArrayList<Movie>> 
             }
         }
 
-        return lista;
+        return null;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Movie> filmes) {
-        super.onPostExecute(filmes);
-        if(mDelegate != null)
-            mDelegate.processFinish(filmes);
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+
+        new MovieLocalAsync(mDelegate, mContext, mClassificacao).execute();
     }
 }

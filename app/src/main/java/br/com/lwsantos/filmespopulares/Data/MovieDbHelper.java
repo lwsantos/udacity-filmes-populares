@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class MovieDbHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     static final String DATABASE_NAME = "movie.db";
 
@@ -27,7 +27,10 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieContract.COLUMN_SINOPSE + " TEXT, " +
                 MovieContract.COLUMN_POSTER + " TEXT, " +
                 MovieContract.COLUMN_DATA_LANCAMENTO + " DATE, " +
-                MovieContract.COLUMN_MEDIA_VOTO + " DOUBLE " +
+                MovieContract.COLUMN_MEDIA_VOTO + " DOUBLE, " +
+                MovieContract.COLUMN_FAVORITO + " BOOLEAN, " +
+                MovieContract.COLUMN_TOP_RATED + " BOOLEAN, " +
+                MovieContract.COLUMN_POPULAR + " BOOLEAN " +
                 " );";
 
         db.execSQL(SQL_CREATE_MOVIE_TABLE);
@@ -35,6 +38,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + MovieContract.TABLE_NAME);
         onCreate(db);
     }
 }

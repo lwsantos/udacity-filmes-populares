@@ -1,36 +1,35 @@
 package br.com.lwsantos.filmespopulares.View;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import br.com.lwsantos.filmespopulares.Adapter.MovieAdapter;
+import br.com.lwsantos.filmespopulares.AsyncTask.MovieLocalAsync;
 import br.com.lwsantos.filmespopulares.AsyncTask.TheMovieDBAsync;
+import br.com.lwsantos.filmespopulares.Data.MovieContract;
 import br.com.lwsantos.filmespopulares.Delegate.AsyncTaskDelegate;
+import br.com.lwsantos.filmespopulares.Interface.ItemClickListener;
 import br.com.lwsantos.filmespopulares.Model.Movie;
 import br.com.lwsantos.filmespopulares.R;
 
 public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
 
     private MovieAdapter mAdapter;
-    private GridView mGrdFilme;
-    private Spinner mSpnClassificacao;
+    private RecyclerView mGrdFilme;
 
     private static final String KEY_POSICAO_CLIQUE = "POSITION";
     private static final String KEY_CLASSIFICACAO = "CLASSIFICACAO";
@@ -68,49 +67,22 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
 
-        mAdapter = new MovieAdapter(getContext());
-
-        mGrdFilme = (GridView) rootView.findViewById(R.id.grdFilmes);
-        mGrdFilme.setAdapter(mAdapter);
-
-        //Ao clicar em um dos posters, eh exibido os detalhes do filme
-        mGrdFilme.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mAdapter = new MovieAdapter(getContext(), new ItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            public void onClick(int position) {
                 //Passa para o metodo implementado da activity o filme selecioando
                 Movie filme = (Movie) mAdapter.getItem(position);
                 ((Callback) getActivity()).onItemSelected(filme);
 
                 //Grava a posição do clique para ser utilizado quando retornar
                 mPosicaoClique = position;
-                mClassificacaoSaved = mSpnClassificacao.getSelectedItem().toString();
-
             }
         });
 
-        mSpnClassificacao = (Spinner) rootView.findViewById(R.id.spnClassificacao);
-        mSpnClassificacao.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Define variavel que contém os array de valores do Spinner
-                TypedArray spinnerEntries = getResources().obtainTypedArray(R.array.pref_classificacao_entries);
-
-                //Verifica se o spinner foi alterado ou se apenas a tela foi rotacionado.
-                //Se foi alterado executa a condição.
-                if(!spinnerEntries.getString(position).toString().equals(mClassificacaoSaved))
-                {
-                    // Zera a posição do clique pois a lista foi recarregada.
-                    mPosicaoClique = mGrdFilme.INVALID_POSITION;
-                    carregarFilmes();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),2);
+        mGrdFilme = (RecyclerView) rootView.findViewById(R.id.grdFilmes);
+        mGrdFilme.setLayoutManager(layoutManager);
+        mGrdFilme.setAdapter(mAdapter);
 
         //Recupera a posição quando retornar na tela, após clicar em voltar da tela de detalhes.
         if(savedInstanceState != null){
@@ -122,15 +94,6 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
             if(savedInstanceState.containsKey(KEY_CLASSIFICACAO))
             {
                 mClassificacaoSaved = savedInstanceState.getString(KEY_CLASSIFICACAO);
-                // Define variavel que contém os array de valores do Spinner
-                TypedArray spinnerValues = getResources().obtainTypedArray(R.array.pref_classificacao_values);
-                for (int i=0; i < spinnerValues.length(); i++) {
-                    if(spinnerValues.getString(i).toString().equals(mClassificacaoSaved))
-                    {
-                        mSpnClassificacao.setSelection(1);
-                        break;
-                    }
-                }
             }
         }
 
@@ -141,15 +104,8 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
     public void onResume() {
         super.onResume();
 
-        // Define variavel que contém os array de valores do Spinner
-        TypedArray spinnerEntries = getResources().obtainTypedArray(R.array.pref_classificacao_entries);
-        for (int i=0; i < spinnerEntries.length(); i++) {
-            if(spinnerEntries.getString(i).toString().equals(mClassificacaoSaved))
-            {
-                mSpnClassificacao.setSelection(i);
-                break;
-            }
-        }
+        if(mClassificacaoSaved == "")
+            mClassificacaoSaved = MovieContract.CLASSIFICACAO_POPULARIDADE;
 
         carregarFilmes();
     }
@@ -169,6 +125,18 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
                 carregarFilmes();
                 Toast.makeText(getContext(), getString(R.string.msg_atualizado), Toast.LENGTH_LONG).show();
                 return true;
+            case R.id.men_por_popularidade:
+                mClassificacaoSaved = MovieContract.CLASSIFICACAO_POPULARIDADE;
+                carregarFilmes();
+                return true;
+            case R.id.men_por_avaliacao:
+                mClassificacaoSaved = MovieContract.CLASSIFICACAO_AVALIACAO;
+                carregarFilmes();
+                return true;
+            case R.id.men_favoritos:
+                mClassificacaoSaved = MovieContract.CLASSIFICACAO_FAVORITO;
+                carregarFilmes();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -178,11 +146,11 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if(mPosicaoClique != mGrdFilme.INVALID_POSITION) {
+        if(mPosicaoClique != -1) {
             outState.putInt(KEY_POSICAO_CLIQUE, mPosicaoClique);
         }
 
-        outState.putString(KEY_CLASSIFICACAO, mSpnClassificacao.getSelectedItem().toString());
+        outState.putString(KEY_CLASSIFICACAO, mClassificacaoSaved);
     }
 
     /**
@@ -199,13 +167,9 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
             mAdapter.addAll(lista);
 
             //Verifica se há itens a serem exibidos.
-            //Caso não exista, exibe mensagem ao usuário.
-            if(lista.size() == 0){
-                Toast.makeText(getContext(), getString(R.string.msg_nenhum_item), Toast.LENGTH_LONG).show();
-            }
-            else {
+            if(lista.size() > 0){
 
-                if (mPosicaoClique != mGrdFilme.INVALID_POSITION) {
+                if (mPosicaoClique != -1) {
                     // Após carregar as informações, a tela realiza um scrool até a posição do clique.
                     mGrdFilme.smoothScrollToPosition(mPosicaoClique);
                 }
@@ -214,7 +178,7 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
                     mGrdFilme.smoothScrollToPosition(0);
                 }
 
-                if (mTwoPane && mPosicaoClique == mGrdFilme.INVALID_POSITION)
+                if (mTwoPane && mPosicaoClique == -1)
                 {
                     //Se a Activity tiver dois paineis (tablet) e nenhum item estiver selecionado,
                     //seleciona o primeiro.
@@ -234,37 +198,10 @@ public class MoviesFragment extends Fragment implements AsyncTaskDelegate {
 
     private void carregarFilmes(){
 
-        // Define variavel que contém os array de valores do Spinner
-        TypedArray spinnerValues = getResources().obtainTypedArray(R.array.pref_classificacao_values);
-        // De acordo com o posição do item selecionado, caputara o valor do array.
-        String classificacao = spinnerValues.getString(mSpnClassificacao.getSelectedItemPosition());
+        new MovieLocalAsync(this, getContext(), mClassificacaoSaved).execute();
 
-        //Se não tiver conexão porém a classificação for favorito, realiza a consulta pois está armazenado localmente.
-        if(verificarConexao() || classificacao.equals("favorite")) {
-            //Executa a thread em segundo plano para capturar a lista de filmes
-            new TheMovieDBAsync(this, getContext()).execute(classificacao);
-        }
-        else{
-            //Se não há	conexão disponível, exibe a mensagem
-            View view = getView();
-
-            Snackbar snackbar = Snackbar.make(view, getString(R.string.msg_erro_conexao), Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction(getString(R.string.acao_atualizar), new View.OnClickListener() {
-                //Ao clicar na snackbar, uma nova tentativa de atualizar a lista é efetuada :-)
-                @Override
-                public void onClick(View view) {
-                    carregarFilmes();
-                }
-            });
-            snackbar.show();
-        }
-    }
-
-    public void onLoadItem()
-    {
-        if(mAdapter.getCount() > 0)
-        {
-            mGrdFilme.setSelection(0);
+        if(verificarConexao() && mClassificacaoSaved != MovieContract.CLASSIFICACAO_FAVORITO) {
+            new TheMovieDBAsync(this, getContext(), mClassificacaoSaved).execute();
         }
     }
 

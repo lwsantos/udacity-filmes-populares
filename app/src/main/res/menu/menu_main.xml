@@ -4,6 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
+        android:id="@+id/men_classificacao"
+        android:icon="@drawable/ic_reorder_white_36dp"
+        android:title="@string/menu_classificacao"
+        app:showAsAction="ifRoom" >
+
+        <menu>
+            <item
+                android:id="@+id/men_por_popularidade"
+                android:title="@string/menu_por_popularidade"/>
+            <item
+                android:id="@+id/men_por_avaliacao"
+                android:title="@string/menu_por_avaliacao"/>
+            <item
+                android:id="@+id/men_favoritos"
+                android:title="@string/menu_favoritos"/>
+        </menu>
+    </item>
+
+    <item
         android:id="@+id/men_atualizar"
         android:title="@string/menu_atualizar"
         android:icon="@drawable/ic_refresh_white_36dp"

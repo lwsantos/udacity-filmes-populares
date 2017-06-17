@@ -12,13 +12,11 @@
 
     <TextView
         android:id="@+id/txtReviewConteudo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        style="@style/text_conteudo"/>
 
     <TextView
         android:id="@+id/txtReviewAutor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/text_conteudo"
         android:gravity="right"/>
 
 </LinearLayout>

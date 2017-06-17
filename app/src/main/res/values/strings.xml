@@ -10,6 +10,10 @@
     <string name="label_reviews">Revisões</string>
 
     <string name="menu_atualizar">Atualizar</string>
+    <string name="menu_classificacao">Classificação</string>
+    <string name="menu_por_popularidade">por Popularidade</string>
+    <string name="menu_por_avaliacao">por Avaliação</string>
+    <string name="menu_favoritos">Favoritos</string>
     <string name="pref_classificacao_label" translatable="false">Classificação</string>
 
     <!--Valores que serão exibidos no combo para o usuário selecionar-->

@@ -23,6 +23,7 @@ public class Movie implements Parcelable {
     private String resumo;
     private Double mediaVoto;
     private Date dataLancamento;
+    private Boolean favorito;
 
     public Movie(){
 
@@ -36,6 +37,7 @@ public class Movie implements Parcelable {
         resumo = in.readString();
         mediaVoto = in.readDouble();
         dataLancamento = (Date) in.readSerializable();
+        favorito = (in.readInt() > 0 ? true : false);
     }
 
     public long getId() {
@@ -110,6 +112,14 @@ public class Movie implements Parcelable {
         this.dataLancamento = dataLancamento;
     }
 
+    public Boolean getFavorito() {
+        return favorito;
+    }
+
+    public void setFavorito(Boolean favorito) {
+        this.favorito = favorito;
+    }
+
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
         public Movie createFromParcel(Parcel in) {
             return new Movie(in);
@@ -135,5 +145,6 @@ public class Movie implements Parcelable {
         dest.writeString(resumo);
         dest.writeDouble(mediaVoto);
         dest.writeSerializable(dataLancamento);
+        dest.writeInt(favorito ? 1 : 0);
     }
 }

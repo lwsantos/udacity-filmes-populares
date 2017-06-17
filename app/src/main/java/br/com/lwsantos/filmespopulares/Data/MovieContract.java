@@ -11,6 +11,11 @@ import android.provider.BaseColumns;
 
 public class MovieContract implements BaseColumns {
 
+
+    public static String CLASSIFICACAO_POPULARIDADE = "popular";
+    public static String CLASSIFICACAO_AVALIACAO = "top_rated";
+    public static String CLASSIFICACAO_FAVORITO = "favorite";
+
     /**** CONFIGURAÇÃO DA TABELA ****/
     // Nome da Tabela
     public static final String TABLE_NAME = "Movie";
@@ -22,6 +27,9 @@ public class MovieContract implements BaseColumns {
     public static final String COLUMN_SINOPSE = "sinopse";
     public static final String COLUMN_MEDIA_VOTO = "mediaVoto";
     public static final String COLUMN_POSTER = "poster";
+    public static final String COLUMN_FAVORITO = "favorito";
+    public static final String COLUMN_TOP_RATED = "top_rated";
+    public static final String COLUMN_POPULAR = "popular";
 
     //Projeção das colunas a serem utilizadas nas consultas.
     //A projeção auxlia para não precisar repetir as colunas e indices nas consultas das telas
@@ -32,7 +40,8 @@ public class MovieContract implements BaseColumns {
             COLUMN_DATA_LANCAMENTO,
             COLUMN_SINOPSE,
             COLUMN_MEDIA_VOTO,
-            COLUMN_POSTER
+            COLUMN_POSTER,
+            COLUMN_FAVORITO
     };
 
     //Indices da projeção
@@ -43,6 +52,7 @@ public class MovieContract implements BaseColumns {
     public static final int INDEX_SINOPSE = 4;
     public static final int INDEX_MEDIA_VOTO = 5;
     public static final int INDEX_POSTER = 6;
+    public static final int INDEX_FAVORITO = 7;
     /*******************************/
 
 

@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by lwsantos on 21/03/17.
@@ -156,6 +157,40 @@ public class MovieProvider extends ContentProvider {
         }
 
         return rowsUpdated;
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        Log.i("MOVIE", "Inicio do bulk insert");
+
+        db.beginTransaction();
+
+        try{
+            for(ContentValues value : values){
+
+                String selection = MovieContract.COLUMN_ID_API + "=?";
+                String[] selectionArgs = new String[]{String.valueOf(value.getAsString(MovieContract.COLUMN_ID_API))};
+
+                int rowsUpdated = db.update(MovieContract.TABLE_NAME, value, selection, selectionArgs);
+
+                if(rowsUpdated == 0) {
+                    long _id = db.insert(MovieContract.TABLE_NAME, null, value);
+                }
+            }
+
+            db.setTransactionSuccessful();
+
+        } finally {
+            db.endTransaction();
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        Log.i("MOVIE", "Fim do bulk insert");
+
+        return 0;
     }
 
     // O objetivo da UriMatcher é associar as URIs a constantes do tipo inteiro

@@ -25,15 +25,7 @@
 
                 <TextView
                     android:id="@+id/txtTitulo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorPrimary"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="24dp"
-                    android:textStyle="normal|bold"
-                    android:gravity="center"/>
+                    style="@style/text_titulo"/>
 
                 <LinearLayout
                     android:id="@+id/poster_container"
@@ -50,6 +42,7 @@
                         android:id="@+id/imgPoster"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
                         android:layout_marginTop="13dp"
                         android:layout_weight="2"
                         android:scaleType="centerCrop"
@@ -66,28 +59,22 @@
 
                         <TextView
                             android:id="@+id/lblDataLancamento"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            style="@style/label_simples"
                             android:text="@string/label_data_lancamento"/>
 
                         <TextView
                             android:id="@+id/txtDataLancamento"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="20dp"
-                            android:textStyle="normal|bold" />
+                            style="@style/text_destaque"/>
 
                         <TextView
                             android:id="@+id/lblMediaVoto"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="10dp"
+                            style="@style/label_simples"
                             android:text="@string/label_media_voto" />
 
                         <TextView
                             android:id="@+id/txtMediaVoto"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            style="@style/text_destaque"/>
 
                         <ImageButton
                             android:id="@+id/btnStar"
@@ -104,9 +91,7 @@
 
                 <TextView
                     android:id="@+id/txtSinopse"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"/>
+                    style="@style/text_conteudo"/>
 
             </LinearLayout>
 
@@ -131,11 +116,7 @@
 
                 <TextView
                     android:id="@+id/lblTrailers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="14dp"
-                    android:textSize="14dp"
-                    android:textColor="@color/colorPrimaryDark"
+                    style="@style/label_destaque"
                     android:text="@string/label_trailers"/>
 
                 <android.support.v7.widget.RecyclerView
@@ -169,11 +150,7 @@
 
                 <TextView
                     android:id="@+id/lblReview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:textSize="14dp"
-                    android:textColor="@color/colorPrimaryDark"
+                    style="@style/label_destaque"
                     android:text="@string/label_reviews"/>
 
                 <android.support.v7.widget.RecyclerView

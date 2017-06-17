@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<!-- Utilização de um ImageView customizado para redimensionar corretamenta a altura da imagem -->
+<br.com.lwsantos.filmespopulares.Components.PosterImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/imgPoster"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:id="@+id/imgPoster"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"/>
-
-</LinearLayout>
+    android:layout_height="wrap_content"
+    android:scaleType="centerCrop"
+    android:background="@color/colorGrey"/>
